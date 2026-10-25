@@ -148,3 +148,5 @@ vite.config.ts.timestamp-*
 # Turbo Repo
 .turbo
 venv/
+__pycache__/
+*.pyc

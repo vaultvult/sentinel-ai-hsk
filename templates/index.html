@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sentinel AI - HSK Chain</title>
+    <style>
+        body {
+            background-color: #0d1117;
+            color: #c9d1d9;
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background: #161b22;
+            padding: 40px;
+            border-radius: 10px;
+            border: 1px solid #30363d;
+            width: 450px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+        }
+        h1 { color: #58a6ff; text-align: center; margin-bottom: 5px; }
+        p.subtitle { text-align: center; font-size: 14px; color: #8b949e; margin-top: 0; margin-bottom: 30px; }
+        input {
+            width: 100%; padding: 12px; background: #0d1117;
+            border: 1px solid #30363d; color: #58a6ff;
+            border-radius: 5px; box-sizing: border-box; margin-bottom: 20px;
+            font-family: inherit;
+        }
+        input:focus { outline: none; border-color: #58a6ff; }
+        button {
+            width: 100%; padding: 12px; background: #238636;
+            color: white; border: none; border-radius: 5px;
+            font-weight: bold; cursor: pointer; transition: 0.3s;
+            font-family: inherit; font-size: 16px;
+        }
+        button:hover { background: #2ea043; }
+        .result {
+            margin-top: 20px; padding: 15px; border-radius: 5px; display: none;
+            word-wrap: break-word;
+        }
+        .blocked { background: rgba(248, 81, 73, 0.1); border: 1px solid #f85149; color: #f85149; }
+        .success { background: rgba(56, 139, 253, 0.1); border: 1px solid #58a6ff; color: #58a6ff; }
+        .warning { background: rgba(210, 153, 34, 0.1); border: 1px solid #d29922; color: #d29922; }
+        .loading { text-align: center; display: none; color: #8b949e; margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🛡️ Sentinel AI</h1>
+        <p class="subtitle">Security-First Trading Agent for HSK Chain</p>
+        
+        <input type="text" id="addressInput" placeholder="Enter Target Contract Address (0x...)">
+        <button onclick="runScan()" id="scanBtn">Run Sentinel Scan</button>
+        
+        <div id="loading" class="loading">Running static analysis & AI threat modeling...</div>
+        <div id="result" class="result"></div>
+    </div>
+
+    <script>
+        async function runScan() {
+            const address = document.getElementById('addressInput').value;
+            if(!address) return alert("Please enter an address");
+
+            document.getElementById('result').style.display = 'none';
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('scanBtn').disabled = true;
+
+            try {
+                const response = await fetch('/api/scan', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ address: address })
+                });
+                const data = await response.json();
+                
+                const resDiv = document.getElementById('result');
+                resDiv.style.display = 'block';
+                resDiv.className = `result ${data.status}`;
+                
+                let html = `<strong>${data.message}</strong><br><br>`;
+                if(data.tx_hash) {
+                    html += `<span style="font-size:12px; color:#8b949e">On-Chain Proof:</span><br>`;
+                    html += `<a href="https://testnet-explorer.hsk.xyz/tx/${data.tx_hash}" target="_blank" style="color:#58a6ff; font-size:12px;">${data.tx_hash}</a>`;
+                }
+                resDiv.innerHTML = html;
+
+            } catch (error) {
+                alert("Error connecting to AI agent.");
+            } finally {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('scanBtn').disabled = false;
+            }
+        }
+    </script>
+<script>
+    window.addEventListener("unload", function() {
+        navigator.sendBeacon("/shutdown");
+    });
+</script>
+</body>
+</html>

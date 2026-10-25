@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Working HSK Testnet RPC
-RPC_URL = "https://testnet.hsk.xyz"
+RPC_URL = "https://mainnet.hsk.xyz"
 web3 = Web3(Web3.HTTPProvider(RPC_URL))
 
 def log_audit_to_chain(target_contract, risk_score, report_hash):
@@ -14,7 +14,7 @@ def log_audit_to_chain(target_contract, risk_score, report_hash):
     account = web3.eth.account.from_key(private_key)
     
     # PASTE YOUR DEPLOYED CONTRACT ADDRESS HERE (From the previous step)
-    contract_address = "0xb4FD99d390683DFA2eAE95EbcdDDAa6CF786edc7"
+    contract_address = "0xNEW_MAINNET_ADDRESS"
     
     abi = json.loads('[{"inputs":[{"internalType":"address","name":"_targetContract","type":"address"},{"internalType":"string","name":"_riskScore","type":"string"},{"internalType":"string","name":"_reportHash","type":"string"}],"name":"recordAudit","outputs":[],"stateMutability":"nonpayable","type":"function"}]')
     
@@ -28,7 +28,7 @@ def log_audit_to_chain(target_contract, risk_score, report_hash):
         risk_score, 
         report_hash
     ).build_transaction({
-        'chainId': 133,
+        'chainId': 177,
         'gas': 200000,
         'maxFeePerGas': web3.to_wei('2', 'gwei'),
         'maxPriorityFeePerGas': web3.to_wei('1', 'gwei'),

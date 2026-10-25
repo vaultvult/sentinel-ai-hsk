@@ -8,7 +8,7 @@ load_dotenv()
 PRIVATE_KEY = os.getenv("PRIVATE_KEY")
 
 # HSK Testnet RPC
-RPC_URL = "https://testnet.hsk.xyz"
+RPC_URL = "https://mainnet.hsk.xyz"
 web3 = Web3(Web3.HTTPProvider(RPC_URL))
 
 # 1. Compile the Solidity Contract
@@ -43,7 +43,7 @@ AuditRegistry = web3.eth.contract(abi=abi, bytecode=bytecode)
 
 # Build transaction
 transaction = AuditRegistry.constructor().build_transaction({
-    "chainId": 133,
+    "chainId": 177,
     "gas": 3000000,
     "maxFeePerGas": web3.to_wei("2", "gwei"),
     "maxPriorityFeePerGas": web3.to_wei("1", "gwei"),

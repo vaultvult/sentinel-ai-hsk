@@ -2,6 +2,8 @@
 pragma solidity ^0.8.20;
 
 contract AuditRegistry {
+    address public owner;
+
     struct AuditRecord {
         address targetContract;
         string riskScore;
@@ -12,11 +14,21 @@ contract AuditRegistry {
     mapping(address => AuditRecord[]) public auditHistory;
     event AuditLogged(address indexed target, string riskScore, uint256 timestamp);
 
+    // Restrict access to the AI Agent only
+    modifier onlyOwner() {
+        require(msg.sender == owner, "Only the Sentinel AI Agent can log audits");
+        _;
+    }
+
+    constructor() {
+        owner = msg.sender;
+    }
+
     function recordAudit(
         address _targetContract, 
         string memory _riskScore, 
         string memory _reportHash
-    ) public {
+    ) public onlyOwner {
         AuditRecord memory newRecord = AuditRecord({
             targetContract: _targetContract,
             riskScore: _riskScore,

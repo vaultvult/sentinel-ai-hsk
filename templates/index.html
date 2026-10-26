@@ -122,7 +122,7 @@
                 let html = `<strong>${data.message}</strong>`;
                 if(data.tx_hash) {
                     html += `<br><br><span style="font-size:11px; color:#8b949e">On-Chain Proof:</span><br>`;
-                    html += `<a href="https://testnet-explorer.hsk.xyz/tx/${data.tx_hash}" target="_blank" style="color:#58a6ff; font-size:11px; word-break: break-all;">${data.tx_hash}</a>`;
+                    html += `<a href="https://explorer.hsk.xyz/tx/${data.tx_hash}" target="_blank" style="color:#58a6ff; font-size:11px; word-break: break-all;">${data.tx_hash}</a>`;
                 }
                 resDiv.innerHTML = html;
             } catch (error) {

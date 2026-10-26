@@ -45,8 +45,8 @@ AuditRegistry = web3.eth.contract(abi=abi, bytecode=bytecode)
 transaction = AuditRegistry.constructor().build_transaction({
     "chainId": 177,
     "gas": 3000000,
-    "maxFeePerGas": web3.to_wei("2", "gwei"),
-    "maxPriorityFeePerGas": web3.to_wei("1", "gwei"),
+    "maxFeePerGas": web3.to_wei("500", "gwei"),
+    "maxPriorityFeePerGas": web3.to_wei("400", "gwei"),
     "nonce": web3.eth.get_transaction_count(account.address),
 })
 

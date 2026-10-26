@@ -12,7 +12,7 @@ app = Flask(__name__)
 # Real Token Addresses on HSK Mainnet
 USDT_ADDRESS = "0xf1B50eD67A9e2CC94Ad3c477779E2d4cBfF9029"
 # You must verify the official WHSK address on the explorer, using a placeholder for now
-WHSK_ADDRESS = "0x...WHSK_ADDRESS_HERE..." 
+WHSK_ADDRESS = "0xB210D2120d57b758EE163cFb43e73728c471Cf1" 
 
 @app.route('/')
 def home():

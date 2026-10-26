@@ -2,105 +2,138 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sentinel AI - HSK Chain</title>
+    <title>Sentinel AI - Security Dashboard</title>
     <style>
-        body {
-            background-color: #0d1117;
-            color: #c9d1d9;
-            font-family: 'Courier New', Courier, monospace;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
-        .container {
-            background: #161b22;
-            padding: 40px;
-            border-radius: 10px;
-            border: 1px solid #30363d;
-            width: 450px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.5);
-        }
-        h1 { color: #58a6ff; text-align: center; margin-bottom: 5px; }
-        p.subtitle { text-align: center; font-size: 14px; color: #8b949e; margin-top: 0; margin-bottom: 30px; }
-        input {
-            width: 100%; padding: 12px; background: #0d1117;
-            border: 1px solid #30363d; color: #58a6ff;
-            border-radius: 5px; box-sizing: border-box; margin-bottom: 20px;
-            font-family: inherit;
-        }
-        input:focus { outline: none; border-color: #58a6ff; }
-        button {
-            width: 100%; padding: 12px; background: #238636;
-            color: white; border: none; border-radius: 5px;
-            font-weight: bold; cursor: pointer; transition: 0.3s;
-            font-family: inherit; font-size: 16px;
-        }
+        body { background-color: #0d1117; color: #c9d1d9; font-family: 'Courier New', Courier, monospace; margin: 0; display: flex; justify-content: center; align-items: center; height: 100vh; }
+        .dashboard { background: #161b22; width: 1000px; height: 700px; border: 1px solid #30363d; border-radius: 10px; display: flex; flex-direction: column; box-shadow: 0 0 30px rgba(0,0,0,0.8); overflow: hidden; }
+        
+        .header { padding: 15px; border-bottom: 1px solid #30363d; text-align: center; color: #58a6ff; font-size: 24px; font-weight: bold; }
+        .ticker { background: #0d1117; padding: 8px 15px; color: #3fb950; font-size: 13px; border-bottom: 1px solid #30363d; }
+        
+        .main-content { display: flex; flex: 1; overflow: hidden; }
+        
+        /* Left Side: AI Chat */
+        .chat-panel { width: 50%; display: flex; flex-direction: column; border-right: 1px solid #30363d; }
+        .chat-box { flex-grow: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; }
+        .message { padding: 10px; border-radius: 5px; max-width: 85%; white-space: pre-wrap; font-size: 14px; }
+        .user { background: #1f6feb; color: white; align-self: flex-end; }
+        .bot { background: #21262d; border: 1px solid #30363d; color: #c9d1d9; align-self: flex-start; }
+        .input-area { padding: 15px; border-top: 1px solid #30363d; display: flex; gap: 10px; }
+        
+        /* Right Side: Security Scanner */
+        .scanner-panel { width: 50%; padding: 30px; display: flex; flex-direction: column; justify-content: center; background: #0d1117; }
+        .scanner-title { color: #58a6ff; font-size: 18px; margin-bottom: 20px; text-align: center; }
+        
+        input[type="text"] { width: 100%; padding: 12px; background: #161b22; border: 1px solid #30363d; color: #58a6ff; border-radius: 5px; box-sizing: border-box; margin-bottom: 15px; font-family: inherit; outline: none; }
+        input[type="text"]:focus { border-color: #58a6ff; }
+        
+        button { padding: 12px 20px; background: #238636; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; width: 100%; font-family: inherit; font-size: 16px; transition: 0.3s; }
         button:hover { background: #2ea043; }
-        .result {
-            margin-top: 20px; padding: 15px; border-radius: 5px; display: none;
-            word-wrap: break-word;
-        }
+        
+        .result-box { margin-top: 20px; padding: 15px; border-radius: 5px; display: none; word-wrap: break-word; font-size: 14px; text-align: center; }
         .blocked { background: rgba(248, 81, 73, 0.1); border: 1px solid #f85149; color: #f85149; }
         .success { background: rgba(56, 139, 253, 0.1); border: 1px solid #58a6ff; color: #58a6ff; }
-        .warning { background: rgba(210, 153, 34, 0.1); border: 1px solid #d29922; color: #d29922; }
-        .loading { text-align: center; display: none; color: #8b949e; margin-top: 20px; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🛡️ Sentinel AI</h1>
-        <p class="subtitle">Security-First Trading Agent for HSK Chain</p>
+    <div class="dashboard">
+        <div class="header">🛡️ Sentinel AI - Unified Trading Terminal</div>
+        <div class="ticker" id="ticker">📈 Live Market: HSK $0.12 (+3.4%) | ETH $3,200 (+1.2%) | Agent scanning for arbitrage...</div>
         
-        <input type="text" id="addressInput" placeholder="Enter Target Contract Address (0x...)">
-        <button onclick="runScan()" id="scanBtn">Run Sentinel Scan</button>
-        
-        <div id="loading" class="loading">Running static analysis & AI threat modeling...</div>
-        <div id="result" class="result"></div>
+        <div class="main-content">
+            <!-- LEFT: AI Chat -->
+            <div class="chat-panel">
+                <div class="chat-box" id="chat-box">
+                    <div class="message bot">Hello. I am Sentinel AI. I can monitor markets, execute trades, and audit smart contracts. How can I help you?</div>
+                </div>
+                <div class="input-area">
+                    <input type="text" id="chat-input" placeholder="e.g., Buy 10 HSK of 0xsafe_address_456" onkeypress="handleKeyPress(event)" style="margin:0;">
+                    <button onclick="sendMessage()" style="width: auto;">Send</button>
+                </div>
+            </div>
+
+            <!-- RIGHT: Security Scanner -->
+            <div class="scanner-panel">
+                <div class="scanner-title">🔍 Security Checkpoint (Audit Before Trade)</div>
+                <input type="text" id="addressInput" placeholder="Enter Target Contract (0x...)">
+                <button onclick="runScan()" id="scanBtn">Run Sentinel Scan</button>
+                
+                <div id="result" class="result-box"></div>
+            </div>
+        </div>
     </div>
 
     <script>
+        // Market Ticker Simulation
+        setInterval(() => {
+            const prices = ["HSK $0.12 (+4.1%)", "HSK $0.11 (-1.2%)", "HSK $0.13 (+8.5%)"];
+            document.getElementById('ticker').innerText = `📈 Live Market: ${prices[Math.floor(Math.random() * prices.length)]} | AI scanning for arbitrage...`;
+        }, 3000);
+
+        // --- Chat Logic ---
+        function handleKeyPress(e) { if (e.key === 'Enter') sendMessage(); }
+        
+        async function sendMessage() {
+            const input = document.getElementById('chat-input');
+            const msg = input.value.trim();
+            if (!msg) return;
+            addMessage(msg, 'user'); input.value = '';
+
+            const chatBox = document.getElementById('chat-box');
+            const loadingId = "loading-" + Date.now();
+            chatBox.innerHTML += `<div class="message bot" id="${loadingId}">Analyzing...</div>`;
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            const response = await fetch('/api/chat', {
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: msg })
+            });
+            const data = await response.json();
+            document.getElementById(loadingId).remove();
+            addMessage(data.response, 'bot');
+        }
+
+        function addMessage(text, sender) {
+            const chatBox = document.getElementById('chat-box');
+            const div = document.createElement('div');
+            div.className = `message ${sender}`; div.innerText = text;
+            chatBox.appendChild(div); chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        // --- Explicit Scanner Logic ---
         async function runScan() {
             const address = document.getElementById('addressInput').value;
             if(!address) return alert("Please enter an address");
 
-            document.getElementById('result').style.display = 'none';
-            document.getElementById('loading').style.display = 'block';
+            const resDiv = document.getElementById('result');
+            resDiv.style.display = 'block';
+            resDiv.className = 'result-box';
+            resDiv.innerHTML = "Scanning bytecode...";
             document.getElementById('scanBtn').disabled = true;
 
             try {
                 const response = await fetch('/api/scan', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ address: address })
                 });
                 const data = await response.json();
                 
-                const resDiv = document.getElementById('result');
-                resDiv.style.display = 'block';
-                resDiv.className = `result ${data.status}`;
-                
-                let html = `<strong>${data.message}</strong><br><br>`;
+                resDiv.className = `result-box ${data.status}`;
+                let html = `<strong>${data.message}</strong>`;
                 if(data.tx_hash) {
-                    html += `<span style="font-size:12px; color:#8b949e">On-Chain Proof:</span><br>`;
-                    html += `<a href="https://testnet-explorer.hsk.xyz/tx/${data.tx_hash}" target="_blank" style="color:#58a6ff; font-size:12px;">${data.tx_hash}</a>`;
+                    html += `<br><br><span style="font-size:11px; color:#8b949e">On-Chain Proof:</span><br>`;
+                    html += `<a href="https://testnet-explorer.hsk.xyz/tx/${data.tx_hash}" target="_blank" style="color:#58a6ff; font-size:11px; word-break: break-all;">${data.tx_hash}</a>`;
                 }
                 resDiv.innerHTML = html;
-
             } catch (error) {
-                alert("Error connecting to AI agent.");
+                resDiv.innerText = "Error connecting to AI agent.";
             } finally {
-                document.getElementById('loading').style.display = 'none';
                 document.getElementById('scanBtn').disabled = false;
             }
         }
+
+        // Shutdown listener
+        window.addEventListener("unload", function() { navigator.sendBeacon("/shutdown"); });
     </script>
-<script>
-    window.addEventListener("unload", function() {
-        navigator.sendBeacon("/shutdown");
-    });
-</script>
 </body>
 </html>

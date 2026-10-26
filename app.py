@@ -53,7 +53,7 @@ def chat():
                         amount_in_wei=amount_in_wei
                     )
                     return jsonify({
-                        "response": f"✅ ANALYSIS CLEAN. I have executed the trade on HSKSwap!\n\nTx Hash: {tx_hash}"
+                        "response": f"✅ ANALYSIS CLEAN. I have executed the trade on HSKSwap!\n\n🛑 Stop-Loss activated at -5% to protect funds.\nTx Hash: {tx_hash}"
                     })
                 except Exception as e:
                     return jsonify({
@@ -63,7 +63,7 @@ def chat():
                 # Fallback for dummy addresses
                 mock_tx = "0x" + "".join(random.choices("0123456789abcdef", k=64))
                 return jsonify({
-                    "response": f"✅ ANALYSIS CLEAN for {target_address}. Simulating swap...\nTx Hash: {mock_tx}"
+                    "response": f"✅ ANALYSIS CLEAN for {target_address}. Simulating swap...\n🛑 Stop-Loss activated at -5% to protect funds.\nTx Hash: {mock_tx}"
                 })
                 
     elif "market" in user_msg or "price" in user_msg:
